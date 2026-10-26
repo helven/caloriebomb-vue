@@ -22,7 +22,7 @@ const apiHeaders = {
   'Request-Context': '7bbf3f21-e318-4d1a-ab9f-fc3e744ea8dd', // decoy
   'Client-Context': 'web', // decoy
   'Session-Flag': Math.random().toString(36).substring(2, 8), // decoy
-  Meta: import.meta.env.VITE_API_SECRET,
+  'Meta': import.meta.env.VITE_API_SECRET,
   'Device-Info': /Mobi|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop', // decoy
   'App-Env': 'prod',
 };
