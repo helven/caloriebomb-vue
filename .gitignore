@@ -1,0 +1,51 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# --- Dependencies ---
+node_modules
+
+# --- Build output ---
+dist
+dist-ssr
+*.tsbuildinfo
+
+# --- Testing ---
+coverage
+# Cypress
+/cypress/videos/
+/cypress/screenshots/
+# Vitest
+__screenshots__/
+
+# --- Debug logs ---
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# --- Env and secrets ---
+# Env files can opt in for committing if needed
+.env*
+!.env.example
+*.local
+
+# --- Deployment ---
+.vercel
+
+# --- OS and editor ---
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# --- Tool caches ---
+.eslintcache
+# Vite
+*.timestamp-*-*.mjs
