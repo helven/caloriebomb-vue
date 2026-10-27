@@ -46,14 +46,14 @@ const category = computed(() => {
 // Get soryBy from URL query string
 const sortBy = computed(() => {
   return {
-    value: typeof route.query.sort_by === 'string' ? route.query.sort_by : '',
+    value: typeof route.query.sortby === 'string' ? route.query.sortby : 'name',
     change: (e: Event) => sortByChangeHandler(e),
   };
 });
 // Get sortOrder from URL query string
 const sortOrder = computed(() => {
   return {
-    value: typeof route.query.sort_order === 'string' ? route.query.sort_order : '',
+    value: typeof route.query.sortorder === 'string' ? route.query.sortorder : 'asc',
     change: (e: Event) => sortOrderChangeHandler(e),
   };
 });
@@ -91,9 +91,9 @@ const sortByChangeHandler = (e: Event) => {
   // Construct URL query string
   const value = e.target.value;
   if (value) {
-    query.sort_by = value; // push sort_by in to the query
+    query.sortby = value; // push sortby in to the query
   } else {
-    delete query.sort_by; // remove sort_by from the query
+    delete query.sortby; // remove sortby from the query
   }
 
   router.push({ path: '/foods', query });
@@ -106,9 +106,9 @@ const sortOrderChangeHandler = (e: Event) => {
   // Construct URL query string
   const value = e.target.value;
   if (value) {
-    query.sort_order = value; // push sort_order in to the query
+    query.sortorder = value; // push sortorder in to the query
   } else {
-    delete query.sort_order; // remove sort_order from the query
+    delete query.sortorder; // remove sortorder from the query
   }
 
   router.push({ path: '/foods', query });
@@ -126,7 +126,7 @@ watch(
       page: '1',
     });
     if (category.value.value) {
-      params.set('category', category.value.value);
+      params.set('category_slug', category.value.value);
     }
     fetchFoods(`${API_ROUTES.FOODS.BASE}?${params.toString()}`);
   },
