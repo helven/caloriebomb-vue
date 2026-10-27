@@ -22,7 +22,6 @@ import type { Food } from '@/types';
 // -----------------------------------------------------------------------------
 // --- Props ---
 const { food } = defineProps<{ food: Food }>();
-console.log(food.id);
 const FALLBACK_IMG = `${CDN_MEDIA_URL}/assets/images/food/default-thumb.jpg`;
 const imgSrc = ref(`${CDN_MEDIA_URL}/assets/images/food/${food.id}-thumb.jpg`);
 
