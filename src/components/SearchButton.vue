@@ -3,7 +3,11 @@
 // CONSTANTS
 // -----------------------------------------------------------------------------
 // --- Props ---
-defineProps<{ width?: number; height?: number; class?: string | undefined }>();
+withDefaults(defineProps<{ width?: number; height?: number; class?: string | undefined }>(), {
+  width: 24,
+  height: 24,
+  class: '',
+});
 
 const emit = defineEmits<{ click: [] }>();
 </script>
