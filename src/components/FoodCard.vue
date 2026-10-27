@@ -1,9 +1,16 @@
 <script setup lang="ts">
 // -----------------------------------------------------------------------------
+// EXTERNAL DEPENDENCIES
+// -----------------------------------------------------------------------------
+// --- Vue ---
+import { ref } from 'vue';
+// -----------------------------------------------------------------------------
 // INTERNAL DEPENDENCIES
 // -----------------------------------------------------------------------------
 // --- Utils ---
 import { formatNutrient } from '@/utils/formatters';
+// --- Constants ---
+import { CDN_MEDIA_URL } from '@/constants/global';
 
 // -----------------------------------------------------------------------------
 // TYPES
@@ -14,7 +21,14 @@ import type { Food } from '@/types';
 // CONSTANTS
 // -----------------------------------------------------------------------------
 // --- Props ---
-defineProps<{ food: Food }>();
+const { food } = defineProps<{ food: Food }>();
+console.log(food.id);
+const FALLBACK_IMG = `${CDN_MEDIA_URL}/assets/images/food/default-thumb.jpg`;
+const imgSrc = ref(`${CDN_MEDIA_URL}/assets/images/food/${food.id}-thumb.jpg`);
+
+function onImgError() {
+  imgSrc.value = FALLBACK_IMG;
+}
 </script>
 
 <template>
@@ -31,15 +45,19 @@ defineProps<{ food: Food }>();
         "
       >
       </RouterLink>-->
-      <div
+      <!--<div
         class="food-thumb"
-        style="
-          background-image: url('/assets/images/bomb.svg');
-          background-position: 65% 45%;
-          background-repeat: no-repeat;
-          background-size: 65%;
-        "
-      ></div>
+        style="background-position: 65% 45%; background-repeat: no-repeat; background-size: 65%; position: relative"
+        :style="{ backgroundImage: `url('${CDN_MEDIA_URL}/assets/images/food/${food.id}-full.jpg')` }"
+      >-->
+      <div class="food-thumb relative overflow-hidden">
+        <img
+          :src="imgSrc"
+          alt=""
+          className="absolute top-[45%] h-full max-w-none -translate-y-[45%]"
+          @error="onImgError"
+        />
+      </div>
       <div class="p-4">
         <div class="flex items-start justify-between">
           <!-- TODO <RouterLink :to="`/foods/${food.id}`" class="food-name">{{ food.name }}</RouterLink>-->
