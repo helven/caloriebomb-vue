@@ -3,7 +3,8 @@
 // EXTERNAL DEPENDENCIES
 // -----------------------------------------------------------------------------
 // --- Vue ---
-import { onMounted } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 // --- Pinia ---
 import { storeToRefs } from 'pinia';
@@ -31,10 +32,106 @@ const foodStore = useFoodStore();
 const { listFoods } = storeToRefs(foodStore);
 const { fetchFoods } = foodStore;
 
+// --- Local State ---
+const isFilterVisible = ref(true);
+const router = useRouter();
+const route = useRoute();
+// Get category from URL query string
+const category = computed(() => {
+  return {
+    value: typeof route.query.category === 'string' ? route.query.category : '',
+    change: (e: Event) => categoryChangeHandler(e),
+  };
+});
+// Get soryBy from URL query string
+const sortBy = computed(() => {
+  return {
+    value: typeof route.query.sort_by === 'string' ? route.query.sort_by : '',
+    change: (e: Event) => sortByChangeHandler(e),
+  };
+});
+// Get sortOrder from URL query string
+const sortOrder = computed(() => {
+  return {
+    value: typeof route.query.sort_order === 'string' ? route.query.sort_order : '',
+    change: (e: Event) => sortOrderChangeHandler(e),
+  };
+});
+
 // --- Lifecycle ---
 onMounted(() => {
   fetchFoods(`${API_ROUTES.FOODS.BASE}?sortby=name&sortorder=asc&per_page=9&page=1`);
 });
+
+// --- Handlers ---
+const filterToggleHandler = () => {
+  isFilterVisible.value = !isFilterVisible.value;
+  console.log(isFilterVisible.value);
+};
+const categoryChangeHandler = (e: Event) => {
+  if (!(e.target instanceof HTMLSelectElement)) {
+    return;
+  }
+  const query = { ...route.query };
+  // Construct URL query string
+  const value = e.target.value;
+  if (value) {
+    query.category = value; // push category in to the query
+  } else {
+    delete query.category; // remove category from the query
+  }
+
+  router.push({ path: '/foods', query });
+};
+const sortByChangeHandler = (e: Event) => {
+  if (!(e.target instanceof HTMLSelectElement)) {
+    return;
+  }
+  const query = { ...route.query };
+  // Construct URL query string
+  const value = e.target.value;
+  if (value) {
+    query.sort_by = value; // push sort_by in to the query
+  } else {
+    delete query.sort_by; // remove sort_by from the query
+  }
+
+  router.push({ path: '/foods', query });
+};
+const sortOrderChangeHandler = (e: Event) => {
+  if (!(e.target instanceof HTMLSelectElement)) {
+    return;
+  }
+  const query = { ...route.query };
+  // Construct URL query string
+  const value = e.target.value;
+  if (value) {
+    query.sort_order = value; // push sort_order in to the query
+  } else {
+    delete query.sort_order; // remove sort_order from the query
+  }
+
+  router.push({ path: '/foods', query });
+};
+
+// --- Watchers ---
+// Refetch when the URL query changes. immediate = also run on first load.
+watch(
+  () => route.query,
+  () => {
+    const params = new URLSearchParams({
+      sortby: sortBy.value.value || 'name',
+      sortorder: sortOrder.value.value || 'asc',
+      per_page: '9',
+      page: '1',
+    });
+    if (category.value.value) {
+      params.set('category', category.value.value);
+    }
+    fetchFoods(`${API_ROUTES.FOODS.BASE}?${params.toString()}`);
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
@@ -57,7 +154,7 @@ onMounted(() => {
           <h1 class="text-3xl font-bold">All Foods</h1>
           <div class="text-left text-sm"></div>
         </div>
-        <!--<button class="btn btn-secondary flex items-center rounded-md px-3 py-2 shadow-sm">
+        <button class="btn btn-secondary flex items-center rounded-md px-3 py-2 shadow-sm" @click="filterToggleHandler">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
@@ -81,12 +178,17 @@ onMounted(() => {
             <line x1="16" x2="16" y1="18" y2="22"></line>
           </svg>
           Filters
-        </button>-->
+        </button>
       </div>
     </div>
 
     <!-- --- Filters --- -->
-    <!--<ListingFilter />-->
+    <ListingFilter
+      :class="isFilterVisible ? '' : 'hidden'"
+      :category="category"
+      :sortBy="sortBy"
+      :sortOrder="sortOrder"
+    />
 
     <!-- --- Food Grid --- -->
     <section>

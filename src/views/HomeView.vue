@@ -32,7 +32,6 @@ const { fetchFoods } = foodStore;
 // --- Lifecycle ---
 onMounted(async () => {
   await fetchFoods(`${API_ROUTES.FOODS.BASE}?sortby=random&per_page=6`);
-  console.log(listFoods.value);
 });
 </script>
 
